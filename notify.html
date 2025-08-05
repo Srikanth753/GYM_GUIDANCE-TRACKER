@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send Notification - Gym</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-box {
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    input, select, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+    textarea {
+      resize: none;
+    }
+    button {
+      background-color: #ff4d6d;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-box">
+    <h2>Register Member</h2>
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="tel" id="mobile" placeholder="Mobile Number" required>
+    <textarea id="address" placeholder="Address" required></textarea>
+    <input type="text" id="aadhaar" placeholder="Aadhaar Number" required>
+    <select id="plan" required>
+      <option value="" disabled selected>Select Plan</option>
+      <option value="1-month">1 Month - ₹700</option>
+      <option value="3-months">3 Months - ₹2000</option>
+      <option value="1-year">1 Year - ₹7500</option>
+    </select>
+    <button onclick="sendEmail()">Register & Notify</button>
+  </div>
+
+  <script>
+    // ✅ Initialize EmailJS
+    // emailjs.init("l_oLUQSRl7u-ABJ1C");
+
+    // function sendEmail() {
+    //   const name = document.getElementById("name").value.trim();
+    //   const email = document.getElementById("email").value.trim();
+    //   const mobile = document.getElementById("mobile").value.trim();
+    //   const address = document.getElementById("address").value.trim();
+    //   const aadhaar = document.getElementById("aadhaar").value.trim();
+    //   const plan = document.getElementById("plan").value;
+
+    //   if (!name || !email || !mobile || !address || !aadhaar || !plan) {
+    //     alert("❌ Please fill in all fields.");
+    //     return;
+    //   }
+
+    //   // ✅ Send email
+    //   emailjs.send("service_vvhajt9", "template_3v8b66q", {
+    //     from_name: name,
+    //     from_email: email,
+    //     mobile: mobile,
+    //     address: address,
+    //     aadhaar: aadhaar,
+    //     plan: plan
+    //   }).then(() => {
+    //     alert("✅ Email sent successfully to admin.");
+    //     console.log("📧 Email sent to admin.");
+    //   }).catch((error) => {
+    //     console.error("❌ Failed to send mail (or)Check your network connection:", error);
+    //     alert("❌ Failed to send mail (or)Check your network connection: " + (error.text || error.message || "Unknown error"));
+    //   });
+    // }
+    
+function sendEmail() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const aadhaar = document.getElementById("aadhaar").value.trim();
+  const plan = document.getElementById("plan").value;
+
+  if (!name || !email || !mobile || !address || !aadhaar || !plan) {
+    alert("❌ Please fill in all fields.");
+    return;
+  }
+
+  // ✅ Use backend server to send mail
+  fetch("https://gym-payment-server-backend.onrender.com/payment-success", {
+
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, email, mobile, address, aadhaar, plan })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("✅ Registration completed! Proceeding to next step...");
+    window.location.href = "progress.html"; // or whatever next page
+  })
+  .catch(error => {
+    console.error("❌ Failed to connect to server:", error);
+    alert("❌ Could not connect to server. Please try again.");
+  });
+}
+  </script>
+
+</body>
+</html>

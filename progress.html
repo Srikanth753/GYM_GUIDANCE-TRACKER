@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Progress - SK-FIRE Gym</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                  url('pr2.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #eee;
+    }
+
+    .tracker-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: #2c2c2c;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff4d6d;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background: #ff4d6d;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .upload-btn:hover {
+      background: #ff1a4d;
+    }
+
+    .gallery {
+      margin-top: 30px;
+    }
+
+    .photo-entry {
+      background: #3a3a3a;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .photo-entry img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .nav-buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .nav-buttons button {
+      background: #ff4d6d;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+
+    .nav-buttons button:hover {
+      background: #ff1a4d;
+    }
+  </style>
+</head>
+<body>
+  <div class="tracker-container">
+    <h1>📸 Track Your Progress</h1>
+
+    <input type="file" id="photoInput" accept="image/*" style="display: none;" />
+    <label for="photoInput" class="upload-btn">📁 Choose Progress Photo</label>
+
+    <div class="gallery" id="photoGallery">
+      <p style="color:#ccc;">No progress photos uploaded yet.</p>
+    </div>
+
+    <div class="nav-buttons">
+      <button onclick="goBack()">⬅ Back</button>
+      <button onclick="goNext()">Next ➡</button>
+    </div>
+  </div>
+
+  <script>
+  const photoInput = document.getElementById('photoInput');
+  const photoGallery = document.getElementById('photoGallery');
+
+  // Load gallery from localStorage
+  let gallery = JSON.parse(localStorage.getItem('photoGallery')) || [];
+
+  function displayGallery() {
+    if (gallery.length === 0) {
+      photoGallery.innerHTML = `<p style="color:#ccc;">No progress photos uploaded yet.</p>`;
+      return;
+    }
+
+    photoGallery.innerHTML = '';
+    gallery.forEach((entry, index) => {
+      const div = document.createElement('div');
+      div.className = 'photo-entry';
+      div.innerHTML = `
+        <strong>${entry.date}</strong><br>
+        <img src="${entry.image}" alt="Progress Photo">
+        <br>
+        <button onclick="removePhoto(${index})" style="margin-top:10px; padding: 5px 10px; background:#ff4d6d; color:white; border:none; border-radius:5px; cursor:pointer;">🗑️ Remove</button>
+      `;
+      photoGallery.prepend(div); // latest first
+    });
+  }
+
+  function removePhoto(index) {
+    if (confirm("Are you sure you want to remove this photo?")) {
+      gallery.splice(index, 1); // remove from array
+      localStorage.setItem('photoGallery', JSON.stringify(gallery)); // update storage
+      displayGallery(); // refresh
+    }
+  }
+
+  photoInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageData = e.target.result;
+        const today = new Date().toLocaleDateString();
+
+        // Add new photo to gallery
+        gallery.push({ date: today, image: imageData });
+        localStorage.setItem('photoGallery', JSON.stringify(gallery));
+        displayGallery();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function goBack() {
+    window.location.href = 'page4.html'; // update if needed
+  }
+
+  function goNext() {
+    window.location.href = 'next-page.html'; // update if needed
+  }
+
+  // Initial display
+  displayGallery();
+</script>
+</body>
+</html>

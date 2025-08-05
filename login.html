@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SK-FIRE Gym Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+     body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('wel4.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #eee;
+}
+
+    .container {
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ff4d6d;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #3a3a3a;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #ff1a4d;
+    }
+
+    .switch {
+      margin-top: 15px;
+      text-align: center;
+      cursor: pointer;
+      color: #ff4d6d;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="formContainer">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <div class="switch" onclick="showSignup()">New User? Create Account</div>
+  </div>
+
+  <script>
+    function showSignup() {
+      document.getElementById("formContainer").innerHTML = `
+        <h2>Create Account</h2>
+        <input type="text" id="signupName" placeholder="Name" required />
+        <input type="email" id="signupEmail" placeholder="Email" required />
+        <input type="password" id="signupPassword" placeholder="Password" required />
+        <button onclick="createAccount()">Create Account</button>
+        <div class="switch" onclick="showLogin()">Back to Login</div>
+      `;
+    }
+
+    function showLogin() {
+      document.getElementById("formContainer").innerHTML = `
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button onclick="login()">Login</button>
+        <div class="switch" onclick="showSignup()">New User? Create Account</div>
+      `;
+    }
+
+    function createAccount() {
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+
+      if (!name || !email || !password) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      localStorage.setItem("gymUserEmail", email);
+      localStorage.setItem("gymUserPassword", password);
+      localStorage.setItem("gymUserName", name);
+
+      alert("Account created successfully! Please log in.");
+      showLogin();
+    }
+
+    function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const storedEmail = localStorage.getItem("gymUserEmail");
+      const storedPassword = localStorage.getItem("gymUserPassword");
+
+      if (email === storedEmail && password === storedPassword) {
+        alert("Login successful! Welcome.");
+        window.location.href = "firstpage.html"; // go to registration or dashboard
+      } else {
+        alert("Invalid email or password. Try again.");
+      }
+    }
+  </script>
+</body>
+</html>

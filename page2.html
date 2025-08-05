@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Member Dashboard - SK Gym</title>
+  <style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('p4.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #eee;
+}
+
+    .dashboard {
+      max-width: 900px;
+      margin: auto;
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    h1, h2 {
+      color: #ff4d6d;
+      text-align: center;
+    }
+    .info-group {
+      margin: 20px 0;
+    }
+    .info-group label {
+      font-weight: bold;
+    }
+    .quote {
+      margin-top: 30px;
+      padding: 15px;
+      background: #3a3a3a;
+      border-left: 5px solid #ff4d6d;
+      border-radius: 8px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Welcome to Your Dashboard</h1>
+    
+    <div class="info-group">
+      <h2>👤 Member Information</h2>
+      <p><label>Name:</label> <span id="name"></span></p>
+      <p><label>Email:</label> <span id="email"></span></p>
+      <p><label>Mobile:</label> <span id="mobile"></span></p>
+      <p><label>Address:</label> <span id="address"></span></p>
+      <p><label>Aadhaar:</label> <span id="aadhaar"></span></p>
+    </div>
+
+    <div class="info-group">
+      <h2>📋 Membership Details</h2>
+      <p><label>Plan Selected:</label> <span id="plan"></span></p>
+      <p><label>Cost:</label> <span id="cost"></span></p>
+      <p><label>Start Date:</label> <span id="start-date"></span></p>
+      <p><label>Expiry Date:</label> <span id="expiry-date"></span></p>
+      <p><label>Status:</label> <span id="status"></span></p>
+    </div>
+
+    <div class="quote" id="motivational-quote">
+      Loading quote...
+    </div>
+    <div class="next-page" style="text-align: center; margin-top: 20px;">
+        <a href="page3.html">
+            <button onclick="window.location.href='page3.html'" style="background: #ff4d6d; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Next Page</button>
+        </a>
+    </div>
+
+  <script>
+    // Fetch from localStorage
+    const name = localStorage.getItem("name");
+    const email = localStorage.getItem("email");
+    const mobile = localStorage.getItem("mobile");
+    const address = localStorage.getItem("address");
+    const aadhaar = localStorage.getItem("aadhaar");
+    const plan = localStorage.getItem("plan");
+
+    const planData = {
+      "1-month": { cost: "₹700", duration: 30 },
+      "2-months": { cost: "₹1400", duration: 60 },
+      "3-months": { cost: "₹2000", duration: 90 },
+      "1-year": { cost: "₹7500", duration: 365 }
+    };
+
+    // Fill in user info
+    document.getElementById("name").textContent = name;
+    document.getElementById("email").textContent = email;
+    document.getElementById("mobile").textContent = mobile;
+    document.getElementById("address").textContent = address;
+    document.getElementById("aadhaar").textContent = aadhaar;
+    document.getElementById("plan").textContent = planData[plan]?.cost ? plan : "N/A";
+    document.getElementById("cost").textContent = planData[plan]?.cost || "N/A";
+
+    // Membership date logic
+    const today = new Date();
+    const startDate = today.toLocaleDateString();
+    const expiry = new Date(today.getTime() + planData[plan]?.duration * 24 * 60 * 60 * 1000);
+    const expiryDate = expiry.toLocaleDateString();
+
+    document.getElementById("start-date").textContent = startDate;
+    document.getElementById("expiry-date").textContent = expiryDate;
+
+    // Status check
+    const status = new Date() <= expiry ? "✅ Active" : "❌ Expired";
+    document.getElementById("status").textContent = status;
+
+    // Motivational quotes
+    const quotes = [
+      "Fall in love with taking care of yourself.",
+      "The body achieves what the mind believes.",
+      "Push harder than yesterday if you want a different tomorrow.",
+      "Discipline is choosing between what you want now and what you want most.",
+      "You don’t have to be extreme, just consistent."
+    ];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("motivational-quote").textContent = `"${randomQuote}"`;
+  </script>
+</body>
+</html>

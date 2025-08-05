@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sk's Akatsuki Gym Registration</title>
+
+    <!-- ✅ EmailJS SDK and initialization -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>
+      (function () {
+        emailjs.init("l_oLUQSRl7u-ABJ1C"); // Your public key
+      })();
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('gym_bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #eee;
+}
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 100%;
+            gap: 20px;
+        }
+        .left-side, .right-side {
+            padding: 20px;
+            background: #2c2c2c;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        h1, h2 {
+            text-align: center;
+            font-weight: bold;
+            color: #ff4d6d;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input, textarea, select, button {
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 16px;
+            background: #3a3a3a;
+            color: #fff;
+        }
+        button {
+            background: #ff4d6d;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(255, 77, 109, 0.3);
+        }
+        button:hover {
+            background: #ff1a4d;
+        }
+        .plan-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .plan-list ul li {
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            margin: 10px 0;
+            background: #3a3a3a;
+            color: #eee;
+        }
+        .help-service a {
+            color: #ff4d6d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .help-service a:hover {
+            text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            margin: 10% auto;
+        }
+        .next-page {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <h1>Welcome to Sk's Akatsuki Gym</h1>
+            <h2>Register Now</h2>
+            <form id="registrationForm">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="tel" id="mobile" placeholder="Mobile Number" required>
+                <textarea id="address" placeholder="Address" required></textarea>
+                <input type="text" id="aadhaar" placeholder="Aadhaar Card Number" pattern="\d{12}" required>
+                <select id="plan" required>
+                    <option value="" disabled selected>Select a plan</option>
+                    <option value="1-month">1 Month - ₹700</option>
+                    <option value="2-months">2 Months - ₹1400</option>
+                    <option value="3-months">3 Months - ₹2000</option>
+                    <option value="1-year">1 Year - ₹7500</option>
+                </select>
+                <button type="button" onclick="registerMember()">Register Now</button>
+            </form>
+           <!-- Payment Option Selector -->
+<div id="paymentOption" style="display:none;">
+    <h2>Choose Payment Method</h2>
+    <button onclick="showQRCode()">📷 Pay by QR Code</button>
+    <button onclick="showUPIPayment()">📲 Pay via UPI App</button>
+</div>
+<!-- QR Code Section -->
+<div id="qrSection" style="display:none;">
+    <h2>QR Code Payment</h2>
+    <img src="Qr code.jpg" alt="QR Code for Payment" style="max-width:300px; border:2px solid #ff4d6d; border-radius:10px;">
+    <p>Scan using any UPI app like GPay, PhonePe, Paytm, etc.</p>
+        <button onclick="submitPayment()">✅ I've completed payment</button>
+
+    <button onclick="goBackToPaymentOption()">Back</button>
+</div>
+<!-- UPI App Link Section -->
+<div id="upiSection" style="display:none;">
+    <h2>UPI App Payment</h2>
+    <p><strong>Click below to pay via UPI App:</strong></p>
+    <a id="upiLink" href="#" style="color:#ff4d6d; font-weight:bold;">
+  Pay Now via UPI
+</a>
+    <button onclick="submitPayment()">✅ I've completed payment</button>
+    <p>After payment, wait for confirmation.</p>
+    <button onclick="goBackToPaymentOption()">Back</button>
+</div>
+        </div>
+        <div class="right-side">
+            <div class="plan-list">
+                <h3>Available Plans</h3>
+                <ul>
+                    <li>1 Month - ₹700</li>
+                    <li>2 Months - ₹1400</li>
+                    <li>3 Months - ₹2000</li>
+                    <li>1 Year - ₹7500</li>
+                </ul>
+            </div>
+            <div class="help-service">
+                <h3>Need Help?</h3>
+                <p><a href="javascript:void(0);" onclick="openHelpModal()">Contact our support team</a></p>
+                <div class="quote-list">
+                    <p>"Strong today, stronger tomorrow."</p>
+                    <p>"No pain, no gain."</p>
+                    <p>"Push yourself, because no one else is going to do it for you."</p>
+                    <p>"Success starts with self-discipline."</p>
+                    <p>"The only bad workout is the one you didn’t do."</p>
+                </div>
+                <div class="next-page">
+                    <a href="page2.html">
+                        <button onclick="window.location.href='page2.html'">Next Page</button>
+
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <h3>Describe Your Issue</h3>
+            <textarea id="issueText" placeholder="Write your issue here..." rows="4" style="width: 100%;"></textarea>
+            <br>
+            <button onclick="submitIssue()">Submit</button>
+            <button onclick="closeHelpModal()">Close</button>
+        </div>
+    </div>
+    <script>
+        const planSelect = document.getElementById('plan');
+        planSelect.addEventListener('change', () => {
+            const selectedPlan = planSelect.options[planSelect.selectedIndex].text;
+            alert(`You selected: ${selectedPlan}`);
+        });
+    
+function registerMember() {
+  const form = document.getElementById('registrationForm');
+  if (form.checkValidity()) {
+    if (confirm('Are you sure you want to proceed with registration?')) {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const mobile = document.getElementById("mobile").value;
+      const address = document.getElementById("address").value;
+      const aadhaar = document.getElementById("aadhaar").value;
+      const plan = document.getElementById("plan").value;
+
+      // ✅ Save input (optional)
+      localStorage.setItem("name", name);
+      localStorage.setItem("email", email);
+      localStorage.setItem("mobile", mobile);
+      localStorage.setItem("address", address);
+      localStorage.setItem("aadhaar", aadhaar);
+      localStorage.setItem("plan", plan);
+
+      // ✅ Send to EmailJS
+      emailjs.send("service_vvhajt9", "template_3v8b66q", {
+        from_name: name,
+        from_email: email,
+        mobile: mobile,
+        address: address,
+        aadhaar: aadhaar,
+        plan: plan
+      }).then(() => {
+        console.log("📧 Email sent to admin.");
+        alert('Registration submitted. Now choose your payment method.');
+        document.getElementById('paymentOption').style.display = 'block';
+      }).catch((err) => {
+  alert("❌ Failed to send email: " + err.message);
+});
+    }
+  } else {
+    alert("❌ Please fill all required fields correctly.");
+  }
+}
+        function showQRCode() {
+  document.getElementById('paymentOption').style.display = 'none';
+  document.getElementById('qrSection').style.display = 'block';
+  document.getElementById('upiSection').style.display = 'none';
+}
+    
+       function goBackToPaymentOption() {
+    document.getElementById('qrSection').style.display = 'none';
+    document.getElementById('upiSection').style.display = 'none';
+    document.getElementById('paymentOption').style.display = 'block';
+}
+
+    
+        function openHelpModal() {
+            document.getElementById('helpModal').style.display = 'block';
+        }
+    
+        function closeHelpModal() {
+            document.getElementById('helpModal').style.display = 'none';
+        }
+    
+        function submitIssue() {
+            const issueText = document.getElementById('issueText').value;
+            if (issueText) {
+                alert('Your issue has been submitted successfully.');
+                closeHelpModal();
+            }
+        }
+        function getAmountFromPlan(planValue) {
+  switch (planValue) {
+    case '1-month': return 700;
+    case '2-months': return 1400;
+    case '3-months': return 2000;
+    case '1-year': return 7500;
+    default: return 0;
+  }
+}
+
+function showUPIPayment() {
+  const selectedPlan = document.getElementById('plan').value;
+  const amount = getAmountFromPlan(selectedPlan);
+
+  // ✅ Update the UPI link dynamically
+  const upiLink = `upi://pay?pa=6369055848@ybl&pn=SK_Akatsuki%20Gym&am=${amount}&cu=INR`;
+  const upiAnchor = document.getElementById('upiLink');
+  upiAnchor.href = upiLink;
+  upiAnchor.textContent = `Pay ₹${amount} via UPI`;
+
+  // ✅ Show UPI payment section
+  document.getElementById('paymentOption').style.display = 'none';
+  document.getElementById('qrSection').style.display = 'none';
+  document.getElementById('upiSection').style.display = 'block';
+}
+function submitPayment() {
+  const name = localStorage.getItem("name");
+
+  if (!name) {
+    alert("❌ Please register before submitting payment.");
+    return;
+  }
+
+  const payload = {
+    name: localStorage.getItem("name"),
+    email: localStorage.getItem("email"),
+    mobile: localStorage.getItem("mobile"),
+    address: localStorage.getItem("address"),
+    aadhaar: localStorage.getItem("aadhaar"),
+    plan: localStorage.getItem("plan"),
+  };
+
+  fetch("https://gym-payment-server-backend.onrender.com/payment-success", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => {
+      if (res.ok) {
+        // ✅ Change here
+        alert("✅ Registration completed successfully.\n👉 Click OK to go to the next page.");
+        window.location.href = "page2.html";
+      } else {
+        alert("❌ Payment failed. Try again.");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("❌ Could not connect to server.");
+    });
+}
+    </script>   
+</body>
+</html>

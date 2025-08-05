@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Goal - SK-FIRE Gym</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+         body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('p3.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #eee;
+}
+        .goal-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #2c2c2c;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #ff4d6d;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+        }
+        .btn-cut {
+            background: #ff4d6d;
+        }
+        .btn-bulk {
+            background: #4caf50;
+        }
+        .btn-lean-bulk {
+            background: #ffa500;
+        }
+        .diet-plan {
+            margin-top: 20px;
+            padding: 20px;
+            background: #3a3a3a;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="goal-container">
+        <h1>Set Your Fitness Goal</h1>
+        <div class="input-group">
+            <label for="weight">Current Weight (kg)</label>
+            <input type="number" id="weight" placeholder="Enter your weight">
+        </div>
+        <div class="input-group">
+            <label for="height">Height (cm)</label>
+            <input type="number" id="height" placeholder="Enter your height">
+        </div>
+        <div class="input-group">
+            <label for="target-weight">Target Weight (kg)</label>
+            <input type="number" id="target-weight" placeholder="Enter your target weight">
+        </div>
+        
+        <button class="btn" style="background: #007bff;" onclick="calculateBMI()">Calculate BMI</button>
+
+        <h2>Choose Your Goal</h2>
+        <button class="btn btn-cut" onclick="showDietPlan('cut')">Cut</button>
+        <button class="btn btn-bulk" onclick="showDietPlan('bulk')">Bulk</button>
+        <button class="btn btn-lean-bulk" onclick="showDietPlan('leanBulk')">Lean Bulk</button>
+
+        <div id="diet-plan" class="diet-plan" style="display: none;">
+            <h2>Your Diet Plan</h2>
+            <p id="plan-details"></p>
+            <h2>Recommended Foods</h2>
+            <ul id="food-list"></ul>
+            <h2>Recommended Exercises</h2>
+            <ul id="exercise-list"></ul>
+     <div class="next-page" style="text-align: center; margin-top: 20px;">
+  <button onclick="window.location.href='page4.html'" style="background: #ff4d6d; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+    Next Page
+  </button>
+</div>
+
+
+    <script>
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value) / 100;
+
+            if (weight && height) {
+                const bmi = weight / (height * height);
+                let result, message;
+                let idealWeightMin = 18.5 * (height * height);
+                let idealWeightMax = 24.9 * (height * height);
+
+                if (bmi < 18.5) {
+                    result = 'Underweight';
+                    message = `You need to gain at least ${(idealWeightMin - weight).toFixed(2)} kg to reach a healthy weight.`;
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    result = 'Healthy weight';
+                    message = 'Great job! Maintain your current weight to stay healthy.';
+                } else {
+                    result = 'Overweight';
+                    message = `You need to lose at least ${(weight - idealWeightMax).toFixed(2)} kg to reach a healthy weight.`;
+                }
+                
+                alert(`Your BMI is ${bmi.toFixed(2)}. You are classified as: ${result}\n${message}`);
+            } else {
+                alert('Please enter valid weight and height values!');
+            }
+        }
+
+        function showDietPlan(goal) {
+            const planDetails = document.getElementById('plan-details');
+            const foodList = document.getElementById('food-list');
+            const exerciseList = document.getElementById('exercise-list');
+            const dietPlan = document.getElementById('diet-plan');
+            dietPlan.style.display = 'block';
+
+            if (goal === 'cut') {
+                planDetails.innerHTML = "For Cutting: High protein, moderate fats, and low carbs. Focus on lean meats, veggies, and healthy fats.";
+                foodList.innerHTML = "<li>Grilled Chicken</li><li>Broccoli</li><li>Sweet Potatoes</li><li>Greek Yogurt</li>";
+                exerciseList.innerHTML = "<li>Cardio (30-45 mins)</li><li>HIIT (3-4 times/week)</li><li>Strength Training (Full-body, 3x/week)</li>";
+            } else if (goal === 'bulk') {
+                planDetails.innerHTML = "For Bulking: High calorie, high protein, and moderate carbs. Eat lots of whole grains, lean meats, and healthy fats.";
+                foodList.innerHTML = "<li>Oats</li><li>Chicken Breast</li><li>Rice and Beans</li><li>Almonds</li>";
+                exerciseList.innerHTML = "<li>Heavy Compound Lifts (Squat, Deadlift, Bench Press)</li><li>Progressive Overload Training</li><li>3-4 Sets, 8-10 Reps</li>";
+            } else if (goal === 'leanBulk') {
+                planDetails.innerHTML = "For Lean Bulking: Moderate calorie surplus with balanced macros. Emphasize clean eating with plenty of protein and complex carbs.";
+                foodList.innerHTML = "<li>Salmon</li><li>Quinoa</li><li>Egg Whites</li><li>Avocados</li>";
+                exerciseList.innerHTML = "<li>Moderate-Heavy Lifting (4x/week)</li><li>Cardio (2-3 times/week)</li><li>Accessory Isolation Exercises</li>";
+            }
+        } 
+    </script>
+</body>
+</html>
+
+

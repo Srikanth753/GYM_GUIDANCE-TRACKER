@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff4d6d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+
+    th {
+      background: #222;
+      color: #ff4d6d;
+    }
+
+    tr:nth-child(even) {
+      background: #333;
+    }
+
+    .logout {
+      display: block;
+      text-align: right;
+      margin-bottom: 10px;
+    }
+
+    .logout button {
+      padding: 10px 20px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .logout button:hover {
+      background: #ff1a4d;
+    }
+  </style>
+</head>
+<body>
+  <div class="logout">
+    <button onclick="logout()">Logout</button>
+  </div>
+  <h1>Admin Dashboard - Registrations</h1>
+
+  <table id="regTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Address</th>
+        <th>Aadhaar</th>
+        <th>Plan</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled dynamically -->
+    </tbody>
+  </table>
+
+  <script>
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+      window.location.href = "admin-login.html";
+    }
+
+   fetch("https://gym-payment-server-backend.onrender.com/registrations")
+      .then(res => res.json())
+      .then(data => {
+        const table = document.querySelector("#regTable tbody");
+        if (data.length === 0) {
+          table.innerHTML = `<tr><td colspan="7">No registrations yet</td></tr>`;
+        } else {
+          data.forEach((entry) => {
+            const row = `
+              <tr>
+                <td>${entry.name}</td>
+                <td>${entry.email}</td>
+                <td>${entry.mobile}</td>
+                <td>${entry.address}</td>
+                <td>${entry.aadhaar}</td>
+                <td>${entry.plan}</td>
+                <td>${new Date(entry.timestamp).toLocaleString()}</td>
+              </tr>`;
+            table.innerHTML += row;
+          });
+        }
+      })
+      .catch(err => {
+        alert("❌ Failed to fetch registrations.");
+        console.error(err);
+      });
+
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location.href = "admin-login.html";
+    }
+  </script>
+</body>
+</html>

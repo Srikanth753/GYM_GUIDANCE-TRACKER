@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Plans - SK-FIRE Gym</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+          body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('p6.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #eee;
+}
+        .plan-container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: #2c2c2c;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #ff4d6d;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+        }
+        .btn-cut { background: #ff4d6d; }
+        .btn-bulk { background: #4caf50; }
+        .btn-lean-bulk { background: #ffa500; }
+        .btn-day { background: #007bff; }
+        .btn.active {
+            outline: 3px solid #ffeb3b;
+            box-shadow: 0 0 10px #ffeb3b;
+        }
+        .week-plan {
+            margin-top: 20px;
+            padding: 20px;
+            background: #3a3a3a;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="plan-container">
+        <h1>Workout Plans</h1>
+        <h2>Select a Category</h2>
+        <button class="btn btn-cut" onclick="selectButton(this); showWorkoutPlan('cut')">Cutting Workout Plan</button>
+        <button class="btn btn-bulk" onclick="selectButton(this); showWorkoutPlan('bulk')">Bulking Workout Plan</button>
+        <button class="btn btn-lean-bulk" onclick="selectButton(this); showWorkoutPlan('leanBulk')">Lean Bulking Workout Plan</button>
+
+        <div id="workout-plan" class="week-plan" style="display: none;">
+            <h2>Your Weekly Workout Plan</h2>
+            <div id="day-buttons"></div>
+            <div id="day-details" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const plans = {
+            cut: [
+                "Day 1: Full Body Strength + HIIT (1.5 hrs) - Squats (4x10, 60s rest), Deadlifts (4x8, 90s rest), Push-ups (3x15, 45s rest), HIIT: Burpees, Sprints (30 mins). Avoid sugary snacks.",
+                "Day 2: Upper Body Focus (1.5 hrs) - Bench Press (4x8, 90s rest), Rows (4x10, 60s rest), Shoulder Press (3x10, 60s rest), Core: Planks, Russian Twists (3x30s). Avoid late-night eating.",
+                "Day 3: Cardio & Core (1.5 hrs) - 45 min steady-state cardio, Core: Bicycle Crunches (3x20), Hanging Leg Raises (3x12). Hydrate well.",
+                "Day 4: Lower Body Strength (1.5 hrs) - Lunges (4x10 each leg, 60s rest), Leg Press (4x12, 90s rest), Calf Raises (3x20, 30s rest). Jump rope for 20 mins. Avoid processed carbs.",
+                "Day 5: Full Body Burn (1.5 hrs) - Circuit: Bodyweight Squats, Push-ups, Mountain Climbers (4 rounds, 12 reps each). Stick to lean proteins.",
+                "Day 6: Active Recovery (1.5 hrs) - Yoga, Light Swimming, Mobility Drills. Stretch every muscle group for at least 30 secs. Avoid overexertion.",
+                "Day 7: Rest - Prioritize sleep, hydration, and nutrient-dense meals. Reflect on your weekly progress."
+            ],
+            bulk: [
+                "Day 1: Push Day (1.5 hrs) - Bench Press (5x6, 2 min rest), Overhead Press (4x8, 90s rest), Dips (3x10, 60s rest), Triceps Extensions (3x12, 60s rest). Eat high-calorie meals post-workout.",
+                "Day 2: Pull Day (1.5 hrs) - Deadlifts (5x5, 2 min rest), Pull-ups (4x8, 90s rest), Bicep Curls (3x12, 60s rest), Rows (4x10, 90s rest). Focus on protein-rich snacks.",
+                "Day 3: Leg Day (1.5 hrs) - Squats (5x6, 2 min rest), Bulgarian Split Squats (4x10, 60s rest), Leg Press (3x12, 90s rest), Hamstring Curls (3x10, 60s rest). Prioritize complex carbs.",
+                "Day 4: Mobility & Cardio (1.5 hrs) - Light Cycling (30 mins), Stretching, Core Work: Hanging Leg Raises (3x12, 60s rest). Eat smaller, frequent meals.",
+                "Day 5: Upper Body Power (1.5 hrs) - Bench Press (5x5, 2 min rest), Shoulder Press (4x8, 90s rest), Lateral Raises (3x10, 60s rest). Avoid sugary drinks.",
+                "Day 6: Explosive Training (1.5 hrs) - Plyometrics, Sled Pushes, Power Cleans (4x6, 90s rest). Stick to clean bulk meals.",
+                "Day 7: Rest - Allow muscles to rebuild, track progress, and meal prep for the next week."
+            ],
+            leanBulk: [
+                "Day 1: Push + Core (1.5 hrs) - Incline Bench Press (4x8, 90s rest), Arnold Press (3x10, 60s rest), Planks (3x45s). Focus on lean proteins and complex carbs.",
+                "Day 2: Pull Day (1.5 hrs) - Pull-ups (4x8, 60s rest), Dumbbell Rows (3x10, 90s rest), Face Pulls (3x12, 45s rest). Hydrate well.",
+                "Day 3: Legs + Mobility (1.5 hrs) - Squats (4x8, 90s rest), Lunges (3x12 each leg, 60s rest), Hip Thrusts (3x10). Stretch well post-session.",
+                "Day 4: Upper Body Strength (1.5 hrs) - Bench Press (5x6, 2 min rest), Lateral Raises (3x12, 60s rest), Triceps Dips (3x10). Eat nutrient-dense meals.",
+                "Day 5: Full Body + Cardio (1.5 hrs) - Deadlifts (4x6, 2 min rest), Push-ups (3x15), Sprints (30 mins). Refuel with a balanced meal.",
+                "Day 6: Functional Training (1.5 hrs) - Kettlebell Swings (4x12), Box Jumps (3x10), Battle Ropes (3x30s). Focus on active recovery after.",
+                "Day 7: Rest & Reflect - Prioritize sleep, meal prep, and track progress. Gentle stretching or a walk is great for active recovery."
+            ]
+        };
+
+        function selectButton(button) {
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function showWorkoutPlan(goal) {
+            const workoutPlan = document.getElementById('workout-plan');
+            const dayButtons = document.getElementById('day-buttons');
+            const dayDetails = document.getElementById('day-details');
+            workoutPlan.style.display = 'block';
+            dayButtons.innerHTML = '';
+            dayDetails.innerHTML = '';
+
+            plans[goal].forEach((day, index) => {
+                const button = document.createElement('button');
+                button.className = 'btn btn-day';
+                button.innerText = `Day ${index + 1}`;
+                button.onclick = () => {
+                    document.querySelectorAll('.btn-day').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    dayDetails.innerHTML = `<h3>Day ${index + 1} Details</h3><p>${day}</p>`;
+                };
+                dayButtons.appendChild(button);
+            });
+        
+             // Add the Next Page button
+            const nextPageButton = document.createElement('button');
+            nextPageButton.className = 'btn btn-day';
+            nextPageButton.innerText = 'Next Page';
+            nextPageButton.onclick = goToNextPage;
+            dayButtons.appendChild(nextPageButton);
+        }
+         function goToNextPage() {
+            window.location.href = 'progress.html';
+        }
+        
+    </script>
+</body>
+</html>
+
+
